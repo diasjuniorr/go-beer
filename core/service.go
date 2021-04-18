@@ -95,9 +95,51 @@ func (s *Service) Store(b *Beer) error {
 }
 
 func (s *Service) Update(b *Beer) error {
+	if b.ID == 0 {
+		return fmt.Errorf("invalid ID")
+	}
+
+	tx, err := s.DB.Begin()
+	if err != nil{
+		return err
+	}
+
+	stmt, err := tx.Prepare("UPDATE beer set name=?,type=?,style=? where id=?")
+	if err != nil{
+		return err
+	}
+
+	_, err := stmt.Exec(b.name, b.type, b.style, b.ID)
+	if err != nil{
+		tx.Rollback()
+		return err
+	}
+
+	tx.Commit()
 	return nil
 }
 
 func (s *Service) Remove(b *Beer) error {
+	if b.ID == 0 {
+		return fmt.Errorf("invalid ID")
+	}
+
+	tx, err := s.DB.Begin()
+	if err != nil{
+		return err
+	}
+
+	stmt, err := tx.Prepare("delete beer where id =?")
+	if err != nil{
+		return err
+	}
+
+	_, err := stmt.Exec(b.ID)
+	if err != nil{
+		tx.Rollback()
+		return err
+	}
+
+	tx.Commit()
 	return nil
 }
