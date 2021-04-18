@@ -1,4 +1,4 @@
-package Beer
+package beer
 
 import (
 	"database/sql"

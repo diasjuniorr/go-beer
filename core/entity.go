@@ -1,4 +1,4 @@
-package Beer
+package beer
 
 type Beer struct {
 	ID    int64  `json:"id"`
