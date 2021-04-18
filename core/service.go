@@ -1,5 +1,11 @@
 package Beer
 
+import (
+	"database/sql"
+	"fmt"
+	- "github.com/mattn/go-sqlite3"
+)
+
 type UseCase interface {
 	ReadCase
 	WriteCase
@@ -16,21 +22,75 @@ type WriteCase interface {
 	Remove(b *Beer) error
 }
 
-type Service struct{}
+type Service struct{
+	DB *sql.DB
+}
 
-func NewService() *Service {
-	return &Service{}
+func NewService(db *sql.DB) *Service {
+	return &Service{
+		DB: db
+	}
 }
 
 func (s *Service) GetAll() ([]*Beer, error) {
-	return nil, nil
+	var result []*Beer
+
+	rows, err := s.DB.Query(`SELECT id, name,type, style FROM beer`)
+	if err != nil(
+		return nil, err
+	)
+	defer rows.Close()
+
+	for rows.Next() {
+		var b beer
+
+		err := rows.Scan(&b.ID, &b.Name, &b.type, &b.style)
+		if err != nil{
+			return nil, err
+		}
+
+		result = append(result, &b)
+	}
+	return result, nil
 }
 
 func (s *Service) Get(ID int) (*Beer, error) {
-	return nil, nil
+	var b beer 
+
+	stmt, err := s.DB.Prepare("SELECT id, name, type, style from beer where id =?")
+	if err != nil{
+		return nil, err
+	}
+	defer stmt.Close()
+
+	err = stmt.QueryRow(ID).Scan(&b.ID, &b.name, &b.type, &b.style)
+	if err != nil{
+		return nil, err
+	}
+
+	return stmt, nil
 }
 
 func (s *Service) Store(b *Beer) error {
+	//begin transaction
+	tx, err:= s.DB.Begin()
+	if err != nil{
+		return err
+	}
+
+	stmt, err := tx.Prepare(`insert into beer(id, name, type, style) values(?,?,?,?)`)
+	if err != nil{
+		return err
+	}
+	defer stmt.Close()
+
+	_, err := stmt.Exec(b.ID, b.name, b.type, b.style)
+	if err != nil{
+		tx.Rollback()
+		return err
+	}
+
+	tx.Commit()
 	return nil
 }
 
