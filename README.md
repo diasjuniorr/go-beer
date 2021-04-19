@@ -35,7 +35,7 @@ https://github.com/diasjuniorr/go-beer.git
 
 And run the project
 
-````
+```
 
 cd go-beer
 go build api/main.go
@@ -48,5 +48,7 @@ End with an example of getting some data out of the system or using it for a lit
 ## Usage <a name = "usage"></a>
 
 Add notes about how to use the system.
+
 ```
-````
+
+```
