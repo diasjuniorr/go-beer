@@ -8,8 +8,6 @@ import (
 	"github.com/jotajay/beer_api/core/beer"
 )
 
-var db *sql.DB
-
 func TestStore(t *testing.T) {
 	b := &beer.Beer{
 		ID:    1,
