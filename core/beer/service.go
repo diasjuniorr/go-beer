@@ -130,7 +130,7 @@ func (s *Service) Remove(b *Beer) error {
 		return err
 	}
 
-	stmt, err := tx.Prepare("delete beer where id =?")
+	stmt, err := tx.Prepare("delete from beer where id =?")
 	if err != nil {
 		return err
 	}

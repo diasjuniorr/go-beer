@@ -54,6 +54,27 @@ func TestStore(t *testing.T) {
 	if updatedBeer.Name != newBeerName {
 		t.Fatalf("failed to update beer name. expected: %v, got: %v", newBeerName, updatedBeer.Name)
 	}
+
+	beers, err := service.GetAll()
+	if err != nil {
+		t.Fatalf("failed getting all beeers. %v", err)
+	}
+
+	var beerCount = 1
+	if len(beers) != beerCount {
+		t.Fatalf("failed get all. expected %v, got: %v", beerCount, len(beers))
+	}
+
+	err = service.Remove(updatedBeer)
+	if err != nil {
+		t.Fatalf("failed removing beer: %v", err)
+	}
+
+	_, err = service.Get(1)
+	if err == nil {
+		t.Fatalf("failed removin beer")
+	}
+
 }
 
 func clearDB(db *sql.DB) error {
