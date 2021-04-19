@@ -37,6 +37,23 @@ func TestStore(t *testing.T) {
 	if beer.Name != "Heineken" {
 		t.Fatalf("failed to match name: %v", beer)
 	}
+
+	var newBeerName = "Guiness"
+
+	beer.Name = newBeerName
+	err = service.Update(beer)
+	if err != nil {
+		t.Fatalf("failed updating beer: %v", err)
+	}
+
+	updatedBeer, err := service.Get(1)
+	if err != nil {
+		t.Fatalf("failed getting updatedBeer : %v", updatedBeer)
+	}
+
+	if updatedBeer.Name != newBeerName {
+		t.Fatalf("failed to update beer name. expected: %v, got: %v", newBeerName, updatedBeer.Name)
+	}
 }
 
 func clearDB(db *sql.DB) error {
