@@ -23,7 +23,7 @@ func TestStore(t *testing.T) {
 		os.Exit(1)
 	}
 
-	db.Exec("delete from beer")
+	db.Exec("DELETE FROM beer")
 
 	s := beer.NewService(db)
 
