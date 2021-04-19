@@ -15,14 +15,6 @@ Simple API showing how to create a CRUD API with Go and sqlite.
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See [deployment](#deployment) for notes on how to deploy the project on a live system.
 
-### Prerequisites
-
-What things you need to install the software and how to install them.
-
-```
-Give examples
-```
-
 ### Installing
 
 A step by step series of examples that tell you how to get a development env running.
@@ -43,12 +35,11 @@ go build api/main.go
 
 ```
 
-End with an example of getting some data out of the system or using it for a little demo.
-
 ## Usage <a name = "usage"></a>
 
-Add notes about how to use the system.
-
-```
-
-```
+The API provides the following endpoints:
+`POST /v1/beers` create a new beer
+`GET /v1/beers` list all beers
+`GET /v1/beers/{beerId}` get beer by id
+`PUT /v1/beers/{beerid}` update a beer by id
+`DELETE /v1/beers/{beerid}` delete a beer by id
