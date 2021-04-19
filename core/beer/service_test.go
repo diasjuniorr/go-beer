@@ -23,18 +23,28 @@ func TestStore(t *testing.T) {
 		os.Exit(1)
 	}
 
-	db.Exec("DELETE FROM beer")
+	err = clearDB(db)
+	if err != nil {
+		t.Fatalf("error clearing db: %v", err)
+	}
 
-	s := beer.NewService(db)
+	service := beer.NewService(db)
 
-	err = s.Store(b)
+	err = service.Store(b)
 	if err != nil {
 		t.Fatalf("failed to store beer: %v", err)
 	}
 
-	beer, err := s.Get(1)
+	beer, err := service.Get(1)
 	if beer.Name != "Heineken" {
 		t.Fatalf("failed to match name: %v", beer)
 	}
-	t.Logf("beer stored successfully: %v", b)
+}
+
+func clearDB(db *sql.DB) error {
+	_, err := db.Exec("DELETE FROM beer")
+	if err != nil {
+		return err
+	}
+	return nil
 }
