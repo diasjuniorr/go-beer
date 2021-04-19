@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/jotajay/beer_api/core/beer"
@@ -22,8 +24,19 @@ func main() {
 	r := mux.NewRouter()
 
 	r.HandleFunc("/v1/beers", getAll(service)).Methods("GET")
+	http.Handle("/", r)
 
-	http.ListenAndServe(":3000", r)
+	srv := &http.Server{
+		ReadTimeout:  30 * time.Second,
+		WriteTimeout: 30 * time.Second,
+		Addr:         ":3000",
+		Handler:      http.DefaultServeMux,
+		ErrorLog:     log.New(os.Stderr, "logger: ", log.Lshortfile)}
+
+	err = srv.ListenAndServe()
+	if err != nil {
+		log.Fatalf("Failed to start server. %v", err)
+	}
 }
 
 func getAll(service beer.UseCase) func(http.ResponseWriter, *http.Request) {
