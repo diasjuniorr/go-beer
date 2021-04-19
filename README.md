@@ -29,7 +29,7 @@ A step by step series of examples that tell you how to get a development env run
 
 Clone the repo
 
-````
+```
 https://github.com/diasjuniorr/go-beer.git
 ```
 
@@ -49,3 +49,4 @@ End with an example of getting some data out of the system or using it for a lit
 
 Add notes about how to use the system.
 ```
+````
