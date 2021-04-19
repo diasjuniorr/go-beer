@@ -20,7 +20,7 @@ These instructions will get you a copy of the project up and running on your loc
 Clone the repo
 
 ```
-https://github.com/diasjuniorr/go-beer.git
+git clone https://github.com/diasjuniorr/go-beer.git
 ```
 
 And run the project
