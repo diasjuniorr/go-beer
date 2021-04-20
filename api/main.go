@@ -23,8 +23,7 @@ func main() {
 
 	r := mux.NewRouter()
 
-	r.HandleFunc("/v1/beers", handlers.GetAllBeers(service)).Methods("GET")
-	r.HandleFunc("/v1/beers", handlers.PostBeer(service)).Methods("POST")
+	handlers.Handler(r, service)
 	http.Handle("/", r)
 
 	srv := &http.Server{
