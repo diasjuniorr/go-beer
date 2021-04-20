@@ -84,3 +84,23 @@ func RemoveBeer(service beer.UseCase) func(w http.ResponseWriter, r *http.Reques
 
 	})
 }
+
+func UpdateBeer(service beer.UseCase) func(w http.ResponseWriter, r *http.Request) {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var beer *beer.Beer
+
+		err := json.NewDecoder(r.Body).Decode(&beer)
+		if err != nil {
+			fmt.Printf("failed to parse beer: %v", err)
+			w.WriteHeader(http.StatusBadRequest)
+		}
+
+		err = service.Update(beer)
+		if err != nil {
+			fmt.Printf("failed to updatedBeer beer: %v", err)
+			w.WriteHeader(http.StatusInternalServerError)
+		}
+
+		w.WriteHeader(http.StatusOK)
+	})
+}
