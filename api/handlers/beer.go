@@ -12,19 +12,43 @@ import (
 
 func GetAllBeers(service beer.UseCase) func(w http.ResponseWriter, r *http.Request) {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-
-		beers, err := service.GetAll()
-		if err != nil {
-			fmt.Printf("failed to get all beers: %v", err)
-			w.WriteHeader(http.StatusInternalServerError)
-			return
+		switch r.Header.Get("Accept") {
+		case "application/json":
+			getAllBeersJSON(service, w)
+		default:
+			fmt.Println("html")
+			getAllBeersHTML(service, w)
 		}
-
-		err = json.NewEncoder(w).Encode(beers)
-		return
 	},
 	)
+}
+
+func getAllBeersJSON(service beer.UseCase, w http.ResponseWriter) {
+	w.Header().Set("Content-Type", "application/json")
+
+	beers, err := service.GetAll()
+	if err != nil {
+		fmt.Printf("failed to get all beers: %v", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	err = json.NewEncoder(w).Encode(beers)
+	return
+}
+
+func getAllBeersHTML(service beer.UseCase, w http.ResponseWriter) {
+	w.Header().Set("Content-Type", "application/json")
+
+	beers, err := service.GetAll()
+	if err != nil {
+		fmt.Printf("failed to get all beers: %v", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	err = json.NewEncoder(w).Encode(beers)
+	return
 }
 
 func PostBeer(service beer.UseCase) func(w http.ResponseWriter, r *http.Request) {
