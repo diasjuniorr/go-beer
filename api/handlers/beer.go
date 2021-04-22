@@ -18,9 +18,11 @@ func GetAllBeers(service beer.UseCase) func(w http.ResponseWriter, r *http.Reque
 		if err != nil {
 			fmt.Printf("failed to get all beers: %v", err)
 			w.WriteHeader(http.StatusInternalServerError)
+			return
 		}
 
 		err = json.NewEncoder(w).Encode(beers)
+		return
 	},
 	)
 }
@@ -34,15 +36,18 @@ func PostBeer(service beer.UseCase) func(w http.ResponseWriter, r *http.Request)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			_ = json.NewEncoder(w).Encode(err)
+			return
 		}
 
 		err = service.Store(beer)
 		if err != nil {
 			fmt.Printf("error storing beer: %v", err)
 			w.WriteHeader(http.StatusInternalServerError)
+			return
 		}
 
 		w.WriteHeader(http.StatusCreated)
+		return
 	})
 }
 
@@ -54,14 +59,17 @@ func GetBeer(service beer.UseCase) func(w http.ResponseWriter, r *http.Request) 
 		if err != nil {
 			fmt.Printf("failed to parse id: %v", err)
 			w.WriteHeader(http.StatusBadRequest)
+			return
 		}
 
 		beer, err := service.Get(beerId)
 		if err != nil {
 			fmt.Printf("failed to get beer: %v", err)
+			return
 		}
 
 		json.NewEncoder(w).Encode(beer)
+		return
 	})
 }
 
@@ -73,14 +81,17 @@ func RemoveBeer(service beer.UseCase) func(w http.ResponseWriter, r *http.Reques
 		if err != nil {
 			fmt.Printf("failed to parse beer: %v", err)
 			w.WriteHeader(http.StatusBadRequest)
+			return
 		}
 
 		err = service.Remove(beer)
 		if err != nil {
 			fmt.Printf("failed to remove beer: %v", err)
+			return
 		}
 
 		w.WriteHeader(http.StatusOK)
+		return
 
 	})
 }
@@ -93,14 +104,19 @@ func UpdateBeer(service beer.UseCase) func(w http.ResponseWriter, r *http.Reques
 		if err != nil {
 			fmt.Printf("failed to parse beer: %v", err)
 			w.WriteHeader(http.StatusBadRequest)
+			return
 		}
 
 		err = service.Update(beer)
 		if err != nil {
 			fmt.Printf("failed to updatedBeer beer: %v", err)
 			w.WriteHeader(http.StatusInternalServerError)
+			return
+
 		}
 
 		w.WriteHeader(http.StatusOK)
+		return
+
 	})
 }
