@@ -1,10 +1,10 @@
 package beer
 
 type Beer struct {
-	ID    int64  `json:"id"`
-	Name  string `json:"name"`
-	Type  int    `json:"type"`
-	Style int    `json:"style"`
+	ID    int64     `json:"id"`
+	Name  string    `json:"name"`
+	Type  BeerType  `json:"type"`
+	Style BeerStyle `json:"style"`
 }
 
 type BeerType int
