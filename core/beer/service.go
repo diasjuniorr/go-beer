@@ -18,8 +18,8 @@ type ReadCase interface {
 
 type WriteCase interface {
 	Store(b *Beer) error
-	Update(b *Beer) error
-	Remove(b *Beer) error
+	Update(b *Beer) (int64, error)
+	Remove(b *Beer) (int64, error)
 }
 
 type Service struct {
@@ -94,46 +94,50 @@ func (s *Service) Store(b *Beer) error {
 	return nil
 }
 
-func (s *Service) Update(b *Beer) error {
+func (s *Service) Update(b *Beer) (int64, error) {
 
 	tx, err := s.DB.Begin()
 	if err != nil {
-		return err
+		return 0, err
 	}
 
 	stmt, err := tx.Prepare("UPDATE beer set name=?,type=?,style=? where id=?")
 	if err != nil {
-		return err
+		return 0, err
 	}
 
-	_, err = stmt.Exec(b.Name, b.Type, b.Style, b.ID)
+	result, err := stmt.Exec(b.Name, b.Type, b.Style, b.ID)
 	if err != nil {
 		tx.Rollback()
-		return err
+		return 0, err
 	}
 
+	updated, _ := result.RowsAffected()
+
 	tx.Commit()
-	return nil
+	return updated, nil
 }
 
-func (s *Service) Remove(b *Beer) error {
+func (s *Service) Remove(b *Beer) (remove int64, err error) {
 
 	tx, err := s.DB.Begin()
 	if err != nil {
-		return err
+		return 0, err
 	}
 
 	stmt, err := tx.Prepare("delete from beer where id =?")
 	if err != nil {
-		return err
+		return 0, err
 	}
 
-	_, err = stmt.Exec(b.ID)
+	result, err := stmt.Exec(b.ID)
 	if err != nil {
 		tx.Rollback()
-		return err
+		return 0, err
 	}
 
+	removed, err := result.RowsAffected()
+
 	tx.Commit()
-	return nil
+	return removed, nil
 }

@@ -41,7 +41,7 @@ func TestStore(t *testing.T) {
 	var newBeerName = "Guiness"
 
 	beer.Name = newBeerName
-	err = service.Update(beer)
+	_, err = service.Update(beer)
 	if err != nil {
 		t.Fatalf("failed updating beer: %v", err)
 	}
@@ -65,7 +65,7 @@ func TestStore(t *testing.T) {
 		t.Fatalf("failed get all. expected %v, got: %v", beerCount, len(beers))
 	}
 
-	err = service.Remove(updatedBeer)
+	_, err = service.Remove(updatedBeer)
 	if err != nil {
 		t.Fatalf("failed removing beer: %v", err)
 	}

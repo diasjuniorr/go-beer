@@ -128,9 +128,14 @@ func RemoveBeer(service beer.UseCase) func(w http.ResponseWriter, r *http.Reques
 			return
 		}
 
-		err = service.Remove(beer)
+		removed, err := service.Remove(beer)
 		if err != nil {
 			fmt.Printf("failed to remove beer: %v", err)
+			return
+		}
+
+		if removed < 1 {
+			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
 
@@ -151,12 +156,17 @@ func UpdateBeer(service beer.UseCase) func(w http.ResponseWriter, r *http.Reques
 			return
 		}
 
-		err = service.Update(beer)
+		updated, err := service.Update(beer)
 		if err != nil {
 			fmt.Printf("failed to updatedBeer beer: %v", err)
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 
+		}
+
+		if updated < 1 {
+			w.WriteHeader(http.StatusBadRequest)
+			return
 		}
 
 		w.WriteHeader(http.StatusOK)
