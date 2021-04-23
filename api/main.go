@@ -24,6 +24,9 @@ func main() {
 	r := mux.NewRouter()
 
 	handlers.Handler(r, service)
+
+	fileServer := http.FileServer(http.Dir("./api/static"))
+	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", fileServer)).Methods("GET", "OPTIONS")
 	http.Handle("/", r)
 
 	srv := &http.Server{

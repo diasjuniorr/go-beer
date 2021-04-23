@@ -1,5 +1,5 @@
 {{define "index"}}
-    {{template "header".}}
+    {{template "header" .}}
     <div class="container">
         <h1>Beers</h1>
 
@@ -29,5 +29,5 @@
         {{end}}
     
     </div>
-    {{import "footer" .}}
+    {{template "footer" .}}
 {{end}}

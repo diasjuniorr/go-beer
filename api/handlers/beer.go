@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
+	"html/template"
 	"net/http"
 	"strconv"
 
@@ -16,7 +17,6 @@ func GetAllBeers(service beer.UseCase) func(w http.ResponseWriter, r *http.Reque
 		case "application/json":
 			getAllBeersJSON(service, w)
 		default:
-			fmt.Println("html")
 			getAllBeersHTML(service, w)
 		}
 	},
@@ -38,16 +38,36 @@ func getAllBeersJSON(service beer.UseCase, w http.ResponseWriter) {
 }
 
 func getAllBeersHTML(service beer.UseCase, w http.ResponseWriter) {
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Type", "text/html")
+	ts, err := template.ParseFiles(
+		"./api/templates/header.html",
+		"./api/templates/index.html",
+		"./api/templates/footer.html",
+	)
+
+	if err != nil {
+		http.Error(w, "Error parsing: "+err.Error(), http.StatusInternalServerError)
+	}
 
 	beers, err := service.GetAll()
 	if err != nil {
 		fmt.Printf("failed to get all beers: %v", err)
-		w.WriteHeader(http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	err = json.NewEncoder(w).Encode(beers)
+	data := struct {
+		Title string
+		Beers []*beer.Beer
+	}{
+		Title: "Beers",
+		Beers: beers,
+	}
+
+	err = ts.Lookup("index.html").ExecuteTemplate(w, "index", data)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 	return
 }
 
