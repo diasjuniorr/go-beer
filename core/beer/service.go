@@ -2,7 +2,6 @@ package beer
 
 import (
 	"database/sql"
-	"fmt"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -96,9 +95,6 @@ func (s *Service) Store(b *Beer) error {
 }
 
 func (s *Service) Update(b *Beer) error {
-	if b.ID == 0 {
-		return fmt.Errorf("invalid ID")
-	}
 
 	tx, err := s.DB.Begin()
 	if err != nil {
@@ -121,9 +117,6 @@ func (s *Service) Update(b *Beer) error {
 }
 
 func (s *Service) Remove(b *Beer) error {
-	if b.ID == 0 {
-		return fmt.Errorf("invalid ID")
-	}
 
 	tx, err := s.DB.Begin()
 	if err != nil {
