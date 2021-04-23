@@ -8,12 +8,17 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
+	"github.com/joho/godotenv"
 	"github.com/jotajay/beer_api/api/handlers"
 	"github.com/jotajay/beer_api/core/beer"
 	_ "github.com/mattn/go-sqlite3"
 )
 
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
 	db, err := sql.Open("sqlite3", "./data/beer.db")
 	if err != nil {
 		log.Fatalf("db failed: %v", err)
